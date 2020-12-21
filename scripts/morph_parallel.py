@@ -23,7 +23,7 @@ parser.add_argument('--eras', required = True, help = "Eras list, which will be 
 parser.add_argument('--parallel', type=int, default=5, help = "Cores provided for parallel morphing")
 parser.add_argument('--additional_arguments', type=str, default="--auto_rebin=1" , help = "Additional arguments to be passed to the Morphing executable")
 parser.add_argument('--dry_run',action='store_true', help = "Don't execute, only list Morphing commands")
-
+parser.add_argument('--sm',action='store_true', help = "If set to true, sm categories are used")
 args = parser.parse_args()
 
 categories = []
@@ -41,9 +41,13 @@ for era in eras:
         command = command_template.format(ERA=era, CATEGORY=category, ANALYSIS=args.analysis, ADDITIONALARGS=args.additional_arguments, OUTPUT=args.output_folder, VARIABLE=args.variable)
         commands.append(command)
 
+if args.sm:
+    commands = ["{} --sm=true".format(command) for command in commands]
+
 if args.dry_run:
     for command in commands:
         print command
+
 else:
     p = Pool(args.parallel)
     p.map(execute, commands)
