@@ -665,17 +665,27 @@ int main(int argc, char **argv) {
     cats["tt"] = {
         { 32, "tt_Nbtag0"},
         { 35, "tt_NbtagGt1"},
-    };
+    };    
+    
     cats["em"] = {
         {  2, "em_NbtagGt1_DZetaLtm35"},
         { 32, "em_Nbtag0_DZetaGt30"},
         { 33, "em_Nbtag0_DZetam10To30"},
-        { 34, "em_Nbtag0_DZetam35Tom10"},
+	//	{ 34, "em_Nbtag0_DZetam35Tom10"},
         { 35, "em_NbtagGt1_DZetaGt30"},
         { 36, "em_NbtagGt1_DZetam10To30"},
-        { 37, "em_NbtagGt1_DZetam35Tom10"},
+	//	{ 37, "em_NbtagGt1_DZetam35Tom10"},
     };
-  }
+
+    //    cats["em"] = {
+    //      { 32, "em_Nbtag0_DZetaGtm10_Boosted"},
+    //        { 33, "em_Nbtag0_DZetaGtm10_NonBoosted"},
+    //        { 34, "em_Nbtag0_DZetaGtm10"},
+    //        { 35, "em_Nbtag0_Boosted"},
+    //        { 36, "em_Nbtag0_NonBoosted"},
+    //        { 37, "em_Nbtag0"},
+    //    };
+  } 
   else if(categorization == "sm-ml-only"){
     cats["et"] = {
       {13, "et_tt"},
@@ -1436,7 +1446,6 @@ int main(int argc, char **argv) {
     binning_map["et"][35] = {};
     binning_map["et"][36] = {};
 
-
     binning_map["mt"][101] = {};
     binning_map["mt"][102] = {};
     binning_map["mt"][103] = {};
@@ -1453,7 +1462,6 @@ int main(int argc, char **argv) {
     binning_map["mt"][33] = {};
     binning_map["mt"][35] = {};
     binning_map["mt"][36] = {};
-
 
     binning_map["tt"][101] = {};
     binning_map["tt"][102] = {};
@@ -1496,19 +1504,17 @@ int main(int argc, char **argv) {
       // finer bins for nobtag categories 
       for(auto c : chns) {
         for(auto b : cb.cp().channel({c}).bin_id({mssm_nobtag_categories}).bin_id_set()){
-          binning_map[c][b][0]={0,40,40};
-          binning_map[c][b][1]={40,200,5};
-          binning_map[c][b][2]={200,250,10};
-          binning_map[c][b][3]={250,300, 25};
+	  binning_map[c][b][0]={0,40,40};
+	  binning_map[c][b][1]={40,200,5};
+	  binning_map[c][b][2]={200,300,20};
         }
       }
       //for btag categories use wider bins
       for(auto c : chns) {
         for(auto b : cb.cp().channel({c}).bin_id({mssm_nobtag_categories},false).bin_id_set()){
-          binning_map[c][b][0]={0,40,40};
-          binning_map[c][b][1]={40,200,10};
-          binning_map[c][b][2]={200,260,20};
-          binning_map[c][b][3]={260,300, 40};
+	  binning_map[c][b][0]={0,40,40};
+	  binning_map[c][b][1]={40,200,10};
+	  binning_map[c][b][2]={200,300,25};
         }
       }
     }
@@ -1892,12 +1898,48 @@ int main(int argc, char **argv) {
     }
   }
 
+  //  ConvertShapesToLnN(cb.cp().channel({"em"}), "subtrMC");
+  ConvertShapesToLnN(cb.cp().channel({"em"}), "htt_em_QFlip");
+  ConvertShapesToLnN(cb.cp().channel({"em"}), "htt_em_MuToEFakes_SS");
+  ConvertShapesToLnN(cb.cp().channel({"em"}), "htt_em_MuToEFakes_OS");
+  ConvertShapesToLnN(cb.cp().channel({"em"}), "htt_em_JToMuFakes");
+  ConvertShapesToLnN(cb.cp().channel({"em"}), "htt_em_JToEFakes");
+  ConvertShapesToLnN(cb.cp().channel({"em"}), "CMS_htt_qcd_iso");
+
   // rename MC subtraction uncertainty in the em channel to decorrelate between years and ttbar fraction.
   for (std::string y: {"2016", "2017", "2018"}) {
-      cb.cp().channel({"em"}).era({y}).RenameSystematic(cb, "CMS_htt_qcd_iso", "CMS_htt_qcd_iso_"+y);
+      cb.cp().channel({"em"}).era({y}).RenameSystematic(cb, "CMS_htt_qcd_iso",  "CMS_htt_qcd_iso_"+y);
 
-      cb.cp().bin_id({32,33,34}).channel({"em"}).era({y}).RenameSystematic(cb, "subtrMC", "subtrMC_lowttbar_"+y);
-      cb.cp().bin_id({2,35,36,37}).channel({"em"}).era({y}).RenameSystematic(cb, "subtrMC", "subtrMC_highttbar_"+y);
+      
+      cb.cp().channel({"em"}).era({y}).RenameSystematic(cb, "htt_em_JToEFakes", "htt_em_JToEFakes_"+y);
+      cb.cp().channel({"em"}).era({y}).RenameSystematic(cb, "htt_em_JToMuFakes","htt_em_JToMuFakes_"+y);
+      cb.cp().channel({"em"}).era({y}).RenameSystematic(cb, "htt_em_QFlip",     "htt_em_QFlip_"+y);
+      cb.cp().channel({"em"}).era({y}).RenameSystematic(cb, "htt_em_MuToEFakes_OS", "htt_em_MuToEFakes_OS_"+y);
+      cb.cp().channel({"em"}).era({y}).RenameSystematic(cb, "htt_em_MuToEFakes_SS", "htt_em_MuToEFakes_SS_"+y);
+     
+
+      //      cb.cp().bin_id({32,33,34}).channel({"em"}).era({y}).RenameSystematic(cb, "subtrMC", "subtrMC_lowttbar_"+y);
+      //      cb.cp().bin_id({2,35,36,37}).channel({"em"}).era({y}).RenameSystematic(cb, "subtrMC", "subtrMC_highttbar_"+y);
+
+      //      cb.cp().bin_id({32}).channel({"em"}).era({y}).RenameSystematic(cb, "subtrMC", "subtrMC_lowttbar_DZetaGt30_"+y);
+      //      cb.cp().bin_id({33}).channel({"em"}).era({y}).RenameSystematic(cb, "subtrMC", "subtrMC_lowttbar_DZetam10To30_"+y);
+      //      cb.cp().bin_id({34}).channel({"em"}).era({y}).RenameSystematic(cb, "subtrMC", "subtrMC_lowttbar_DZetam35Tom10_"+y);
+
+      //      cb.cp().bin_id({35}).channel({"em"}).era({y}).RenameSystematic(cb, "subtrMC", "subtrMC_highttbar_DZetaGt30_"+y);
+      //      cb.cp().bin_id({36}).channel({"em"}).era({y}).RenameSystematic(cb, "subtrMC", "subtrMC_highttbar_DZetam10To30_"+y);
+      //      cb.cp().bin_id({37}).channel({"em"}).era({y}).RenameSystematic(cb, "subtrMC", "subtrMC_highttbar_DZetam35Tom10_"+y);
+
+      //      cb.cp().bin_id({2}).channel({"em"}).era({y}).RenameSystematic(cb, "subtrMC", "subtrMC_ttbar_"+y);
+
+      //      cb.cp().bin_id({32,33,34}).channel({"em"}).era({y}).RenameSystematic(cb, "CMS_qcd_relaxediso_nonClosure", "CMS_qcd_relaxediso_nonClosure_lowttbar_"+y);
+      //      cb.cp().bin_id({2,35,36,37}).channel({"em"}).era({y}).RenameSystematic(cb, "CMS_qcd_relaxediso_nonClosure", "CMS_qcd_relaxediso_nonClosure_highttbar_"+y);
+      
+
+  }
+
+  for (std::string y: {"2016", "2017", "2018"}) {
+    cb.cp().channel({"em","mt","et","tt"}).era({y}).RenameSystematic(cb, "embed_zpt_mass_shape", "embed_zpt_mass_shape_"+y);    
+
   }
 
   std::vector<std::string> met_uncerts = {

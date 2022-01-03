@@ -2477,11 +2477,13 @@ void AddMSSMvsSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedd
 
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-      .process(JoinStr({signals, signals_HWW, mssm_signals, {"ZTT", "ZL", "ZJ", "W"}}))
+    //      .process(JoinStr({signals, signals_HWW, mssm_signals, {"ZTT", "ZL", "ZJ", "W"}}))
+    .process(JoinStr({signals, signals_HWW, mssm_signals, {"ZTT", "ZL", "ZJ"}}))
       .AddSyst(cb, "CMS_htt_boson_scale_met_$ERA", "shape", SystMap<>::init(1.00));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-      .process(JoinStr({signals, signals_HWW, mssm_signals, {"ZTT", "ZL", "ZJ", "W"}}))
+    //      .process(JoinStr({signals, signals_HWW, mssm_signals, {"ZTT", "ZL", "ZJ", "W"}}))
+      .process(JoinStr({signals, signals_HWW, mssm_signals, {"ZTT", "ZL", "ZJ"}}))
       .AddSyst(cb, "CMS_htt_boson_res_met_$ERA", "shape", SystMap<>::init(1.00));
 
   // met uncertainty templates are included from taking 100% variation in the correction
@@ -2567,6 +2569,7 @@ void AddMSSMvsSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedd
       .process({"ZTT", "ZL", "ZJ"})
       .AddSyst(cb, "CMS_htt_zjXsec", "lnN", SystMap<>::init(1.02));
 
+  /*
   cb.cp()
       .channel({"em"})
       .process({"QCD"})
@@ -2603,6 +2606,8 @@ void AddMSSMvsSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedd
      .channel({"em"})
      .process({"QCD"})
      .AddSyst(cb, "CMS_htt_qcd_2jet_shape2_$ERA", "shape", SystMap<>::init(1.00));
+  */
+
   cb.cp()
      .channel({"em"})
      .process({"QCD"})
@@ -2619,22 +2624,61 @@ void AddMSSMvsSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedd
       .channel({"em"})
       .process({"QCD"})
       .AddSyst(cb, "CMS_htt_qcd_nbtag_closure_syst", "lnN", SystMap<bin_id>::init
-              ({2,35,36,37}, 1.05));
-    cb.cp()
-       .channel({"em"})
-       .process({"QCD"})
-       .AddSyst(cb, "subtrMC", "shape", SystMap<>::init(1.00));
-  }
-  cb.cp()
-      .channel({"em"})
-      .process({"W"})
-      .AddSyst(cb, "CMS_htt_fake_em_$ERA", "lnN", SystMap<>::init(1.15));
+              ({2,35,36,37}, 1.15));
 
-  cb.cp()
+    //    cb.cp()
+    //      .channel({"em"})
+    //     .process({"QCD"})
+    //      .AddSyst(cb, "CMS_htt_qcd_nobtag_closure_syst", "lnN", SystMap<bin_id>::init
+    //              ({32,33,34}, 1.30));
+
+    //    cb.cp()
+    //      .channel({"em"})
+    //      .process({"QCD"})
+    //      .AddSyst(cb, "subtrMC", "shape", SystMap<>::init(1.00));
+
+    
+    cb.cp()
+      .channel({"em"})
+      .process({"QCD","TTL","VVL","ZL","W"})
+      .AddSyst(cb, "htt_em_JToEFakes", "shape", SystMap<>::init(1.00));
+    cb.cp()
+      .channel({"em"})
+      .process({"QCD","TTL","VVL","ZL","W"})
+      .AddSyst(cb, "htt_em_JToMuFakes", "shape", SystMap<>::init(1.00));
+    cb.cp()
       .channel({"em"})
       .process({"ZL"})
-      .AddSyst(cb, "CMS_htt_ZL_fake_em_$ERA", "lnN", SystMap<>::init(1.2));
+      .AddSyst(cb, "htt_em_MuToEFakes_OS", "shape", SystMap<>::init(1.00));    
+    cb.cp()
+      .channel({"em"})
+      .process({"QCD"})
+      .AddSyst(cb, "htt_em_MuToEFakes_SS", "shape", SystMap<>::init(1.00));    
+    cb.cp()
+      .channel({"em"})
+      .process({"QCD"})
+      .AddSyst(cb, "htt_em_QFlip", "shape", SystMap<>::init(1.00));
+    
 
+    //    cb.cp()
+    //       .channel({"em"})
+    //       .process({"QCD"})
+    //       .AddSyst(cb, "CMS_qcd_relaxediso_nonClosure", "shape", SystMap<>::init(1.00));
+
+
+  }
+
+  /*
+  cb.cp()
+    .channel({"em"})
+    .process({"W"})
+    .AddSyst(cb, "CMS_htt_fake_em_$ERA", "lnN", SystMap<>::init(1.15));
+
+  cb.cp()
+    .channel({"em"})
+    .process({"ZL"})
+    .AddSyst(cb, "CMS_htt_ZL_fake_em_$ERA", "lnN", SystMap<>::init(1.2));
+  */
   // ##########################################################################
   // Uncertainty: Drell-Yan LO->NLO reweighting
   // References:
@@ -3024,6 +3068,12 @@ void AddMSSMvsSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedd
     .channel({"et", "mt", "tt", "em"})
     .process({"EMB"})
     .AddSyst(cb, "CMS_htt_emb_ttbar_$ERA", "shape", SystMap<>::init(1.00));
+
+  cb.cp()
+    .channel({"et", "mt", "tt", "em"})
+    .process({"EMB"})
+    .AddSyst(cb, "embed_zpt_mass_shape", "shape", SystMap<>::init(1.00));
+
 
   // Uncertainty of hadronic tau track efficiency correction
   // uncorrelated between eras
